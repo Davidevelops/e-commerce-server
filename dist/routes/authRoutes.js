@@ -24,8 +24,10 @@ router.post("/add-product", authController_2.createProduct);
 router.get("/get-all-products", authController_1.getAllProduct);
 //get single product
 router.get("/get-product/:productID", authController_1.getProduct);
+//new products
+router.get("/get-new-products", authController_1.getNewProduct);
 //update product
-router.patch("/update-product/:productID", authController_1.updateProduct);
+router.patch("/update-product/:productId", authController_1.updateProduct);
 //delete product
 router.delete("/delete-product/:productID", authController_1.deleteProduct);
 exports.default = router;

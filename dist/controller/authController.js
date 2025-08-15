@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteProduct = exports.updateProduct = exports.getProduct = exports.getAllProduct = exports.createProduct = exports.checkAuth = exports.resetPassword = exports.forgotPassword = exports.logOut = exports.logIn = exports.verifyEmail = exports.signUp = void 0;
+exports.deleteProduct = exports.updateProduct = exports.getPopularProducts = exports.getNewProduct = exports.getProduct = exports.getAllProduct = exports.createProduct = exports.checkAuth = exports.resetPassword = exports.forgotPassword = exports.logOut = exports.logIn = exports.verifyEmail = exports.signUp = void 0;
 const generateTokenAndSetCookie_1 = require("./../utils/generateTokenAndSetCookie");
 const userModel_1 = require("../models/userModel");
 const bcrypt_1 = __importDefault(require("bcrypt"));
@@ -252,16 +252,18 @@ exports.checkAuth = checkAuth;
 // producs controller
 //create product
 const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name, description, properties, price, quantity } = req.body;
+    const { name, description, properties, category, price, imageUrl, isPopular, } = req.body;
     try {
         const product = new productModel_1.Product({
             name,
             description,
             properties,
+            category,
             price,
-            quantity,
+            imageUrl,
+            isPopular,
         });
-        if (!name || !description || !properties || !price || !quantity) {
+        if (!name || !description || !properties || !price || !imageUrl) {
             return res
                 .status(400)
                 .json({ success: false, message: "Please provide all the inputs." });
@@ -312,17 +314,49 @@ const getProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.getProduct = getProduct;
+//get newProducts
+const getNewProduct = (_, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const Products = yield productModel_1.Product.find().sort({ createdAt: -1 }).limit(8);
+        res.status(200).json({ success: true, Products });
+    }
+    catch (error) {
+        console.log("An error occured getting all the products: ", error);
+        res.status(500).json({
+            success: false,
+            message: `An error occured getting al the products: ${error}`,
+        });
+    }
+});
+exports.getNewProduct = getNewProduct;
+//getPopularProducts
+const getPopularProducts = (_, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const Products = yield productModel_1.Product.find().sort({ isPopular: -1 });
+        res.status(200).json({ success: true, Products });
+    }
+    catch (error) {
+        console.log("An error occured getting all the products: ", error);
+        res.status(500).json({
+            success: false,
+            message: `An error occured getting al the products: ${error}`,
+        });
+    }
+});
+exports.getPopularProducts = getPopularProducts;
 //edit product
 const updateProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { productID } = req.params;
-    const { name, description, properties, price, quantity } = req.body;
+    const { productId } = req.params;
+    const { name, description, properties, category, price, imageUrl, isPopular, } = req.body;
     try {
-        const updatedProduct = yield productModel_1.Product.findByIdAndUpdate(productID, {
+        const updatedProduct = yield productModel_1.Product.findByIdAndUpdate(productId, {
             name,
             description,
             properties,
+            category,
             price,
-            quantity,
+            imageUrl,
+            isPopular,
         }, { new: true, runValidators: true });
         res.status(200).json({
             success: true,

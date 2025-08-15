@@ -363,10 +363,32 @@ export const getNewProduct = async (_: Request, res: Response) => {
   }
 };
 
+//getPopularProducts
+export const getPopularProducts = async (_: Request, res: Response) => {
+  try {
+    const Products = await Product.find().sort({ isPopular: -1 });
+    res.status(200).json({ success: true, Products });
+  } catch (error) {
+    console.log("An error occured getting all the products: ", error);
+    res.status(500).json({
+      success: false,
+      message: `An error occured getting al the products: ${error}`,
+    });
+  }
+};
+
 //edit product
 export const updateProduct = async (req: Request, res: Response) => {
   const { productId } = req.params;
-  const { name, description, properties, category, price, imageUrl } = req.body;
+  const {
+    name,
+    description,
+    properties,
+    category,
+    price,
+    imageUrl,
+    isPopular,
+  } = req.body;
 
   try {
     const updatedProduct = await Product.findByIdAndUpdate(
@@ -378,6 +400,7 @@ export const updateProduct = async (req: Request, res: Response) => {
         category,
         price,
         imageUrl,
+        isPopular,
       },
       { new: true, runValidators: true }
     );
