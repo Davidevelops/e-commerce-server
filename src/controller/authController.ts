@@ -280,18 +280,28 @@ export const checkAuth = async (req: Request, res: Response) => {
 
 //create product
 export const createProduct = async (req: Request, res: Response) => {
-  const { name, description, properties, price, quantity } = req.body;
+  const {
+    name,
+    description,
+    properties,
+    category,
+    price,
+    imageUrl,
+    isPopular,
+  } = req.body;
 
   try {
     const product = new Product({
       name,
       description,
       properties,
+      category,
       price,
-      quantity,
+      imageUrl,
+      isPopular,
     });
 
-    if (!name || !description || !properties || !price || !quantity) {
+    if (!name || !description || !properties || !price || !imageUrl) {
       return res
         .status(400)
         .json({ success: false, message: "Please provide all the inputs." });
@@ -339,20 +349,35 @@ export const getProduct = async (req: Request, res: Response) => {
   }
 };
 
+//get newProducts
+export const getNewProduct = async (_: Request, res: Response) => {
+  try {
+    const Products = await Product.find().sort({ createdAt: -1 }).limit(8);
+    res.status(200).json({ success: true, Products });
+  } catch (error) {
+    console.log("An error occured getting all the products: ", error);
+    res.status(500).json({
+      success: false,
+      message: `An error occured getting al the products: ${error}`,
+    });
+  }
+};
+
 //edit product
 export const updateProduct = async (req: Request, res: Response) => {
-  const { productID } = req.params;
-  const { name, description, properties, price, quantity } = req.body;
+  const { productId } = req.params;
+  const { name, description, properties, category, price, imageUrl } = req.body;
 
   try {
     const updatedProduct = await Product.findByIdAndUpdate(
-      productID,
+      productId,
       {
         name,
         description,
         properties,
+        category,
         price,
-        quantity,
+        imageUrl,
       },
       { new: true, runValidators: true }
     );

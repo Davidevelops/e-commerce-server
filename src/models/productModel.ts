@@ -5,18 +5,25 @@ export interface IProduct extends Document {
   description: string;
   properties: { key: string; value: string }[];
   price: number;
-  quantity: number;
+  category: string;
   imageUrl?: string[];
+  isPopular: boolean;
 }
 
-const productSchema = new Schema({
-  name: String,
-  description: String,
-  properties: [{ key: { type: String }, value: { type: String } }],
-  price: Number,
-  quantity: Number,
-  imageUrl: [String],
-});
+const productSchema = new Schema(
+  {
+    name: String,
+    description: String,
+    properties: [{ key: { type: String }, value: { type: String } }],
+    category: String,
+    price: Number,
+    imageUrl: [String],
+    isPopular: Boolean,
+  },
+  {
+    timestamps: true,
+  }
+);
 
 export const Product = mongoose.model<IProduct>(
   "product",

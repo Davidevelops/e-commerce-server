@@ -11,6 +11,7 @@ import {
   getProduct,
   updateProduct,
   deleteProduct,
+  getNewProduct,
 } from "../controller/authController";
 import { createProduct } from "../controller/authController";
 import { verifyToken } from "../middleware/verifyToken";
@@ -36,8 +37,10 @@ router.post("/add-product", createProduct);
 router.get("/get-all-products", getAllProduct);
 //get single product
 router.get("/get-product/:productID", getProduct);
+//new products
+router.get("/get-new-products", getNewProduct);
 //update product
-router.patch("/update-product/:productID", updateProduct);
+router.patch("/update-product/:productId", updateProduct);
 //delete product
 router.delete("/delete-product/:productID", deleteProduct);
 
