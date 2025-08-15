@@ -12,6 +12,7 @@ import {
   updateProduct,
   deleteProduct,
   getNewProduct,
+  getPopularProducts,
 } from "../controller/authController";
 import { createProduct } from "../controller/authController";
 import { verifyToken } from "../middleware/verifyToken";
@@ -39,6 +40,8 @@ router.get("/get-all-products", getAllProduct);
 router.get("/get-product/:productID", getProduct);
 //new products
 router.get("/get-new-products", getNewProduct);
+//get popular products
+router.get("/get-popular-products", getPopularProducts);
 //update product
 router.patch("/update-product/:productId", updateProduct);
 //delete product

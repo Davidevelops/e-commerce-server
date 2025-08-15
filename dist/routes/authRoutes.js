@@ -26,6 +26,8 @@ router.get("/get-all-products", authController_1.getAllProduct);
 router.get("/get-product/:productID", authController_1.getProduct);
 //new products
 router.get("/get-new-products", authController_1.getNewProduct);
+//get popular products
+router.get("/get-popular-products", authController_1.getPopularProducts);
 //update product
 router.patch("/update-product/:productId", authController_1.updateProduct);
 //delete product
