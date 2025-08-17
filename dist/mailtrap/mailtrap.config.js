@@ -12,6 +12,6 @@ exports.mailtrap_client = new mailtrap_1.MailtrapClient({
     token: TOKEN,
 });
 exports.sender = {
-    email: "hello@demomailtrap.co",
-    name: "David Dela Cruz",
+    email: "hello@developeronline.xyz",
+    name: "Mailtrap Test",
 };
