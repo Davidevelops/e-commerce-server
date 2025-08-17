@@ -366,7 +366,7 @@ export const getNewProduct = async (_: Request, res: Response) => {
 //getPopularProducts
 export const getPopularProducts = async (_: Request, res: Response) => {
   try {
-    const Products = await Product.find().sort({ isPopular: -1 });
+    const Products = await Product.find({ isPopular: true });
     res.status(200).json({ success: true, Products });
   } catch (error) {
     console.log("An error occured getting all the products: ", error);

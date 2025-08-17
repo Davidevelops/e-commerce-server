@@ -332,7 +332,7 @@ exports.getNewProduct = getNewProduct;
 //getPopularProducts
 const getPopularProducts = (_, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const Products = yield productModel_1.Product.find().sort({ isPopular: -1 });
+        const Products = yield productModel_1.Product.find({ isPopular: true });
         res.status(200).json({ success: true, Products });
     }
     catch (error) {
