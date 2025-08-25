@@ -11,5 +11,5 @@ export const mailtrap_client = new MailtrapClient({
 
 export const sender = {
   email: "hello@developeronline.xyz",
-  name: "Mailtrap Test",
+  name: "Anyo E-Commerce Team",
 };

@@ -11,6 +11,7 @@ import {
 import crypto from "crypto";
 import { AuthRequest } from "../middleware/verifyToken";
 import { Product } from "../models/productModel";
+import { Order } from "../models/orderModel";
 
 //check for authentication
 
@@ -434,6 +435,123 @@ export const deleteProduct = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: `An error occured while trying to delete the product: ${error}`,
+    });
+  }
+};
+
+export const createOrder = async (req: AuthRequest, res: Response) => {
+  try {
+    console.log("Incoming order request body:", req.body);
+    console.log("User from middleware:", req.userId);
+
+    const userId = req.userId;
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const {
+      products,
+      paymentMethod,
+      shippingAddress,
+      paymentStatus,
+      orderStatus,
+    } = req.body;
+
+    const totalAmount = products.reduce(
+      (sum: number, item: { price: number; quantity: number }) =>
+        sum + item.price * item.quantity,
+      0
+    );
+    const order = new Order({
+      user: userId,
+      products,
+      totalAmount,
+      paymentMethod,
+      shippingAddress,
+      paymentStatus,
+      orderStatus,
+    });
+
+    await order.save();
+
+    res.status(201).json({ successful: true, message: "Order placed.", order });
+  } catch (error: any) {
+    console.error("Create Order Error:", error);
+    res.status(500).json({ successful: false, message: error.message });
+  }
+};
+
+export const userOrder = async (req: AuthRequest, res: Response) => {
+  const userId = req.userId;
+  try {
+    const userOrderList = await Order.find({ user: userId })
+      .populate("products.product")
+      .sort({ createdAt: -1 });
+    if (!userId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "No logged in user" });
+    }
+    res.status(200).json({ success: true, userOrderList });
+  } catch (error: any) {
+    console.error(error);
+    res.status(400).json({
+      success: false,
+      message: `An error occurred: ${error.message}`,
+    });
+  }
+};
+
+export const getOrders = async (req: Request, res: Response) => {
+  try {
+    let orders = await Order.find();
+    res.status(200).json({ success: true, orders });
+  } catch (error: any) {
+    console.error(error);
+    res.status(400).json({
+      success: false,
+      message: `An error occurred: ${error.message}`,
+    });
+  }
+};
+
+export const updatePaymentStatus = async (req: Request, res: Response) => {
+  const { orderId } = req.params;
+  const { paymentStatus } = req.body;
+  try {
+    let updatedPaymentStatus = await Order.findByIdAndUpdate(
+      orderId,
+      {
+        paymentStatus,
+      },
+      { new: true, runValidators: true }
+    );
+    res.status(200).json({ success: true, updatedPaymentStatus });
+  } catch (error: any) {
+    console.error(error);
+    res.status(400).json({
+      success: false,
+      message: `An error occurred: ${error.message}`,
+    });
+  }
+};
+export const updateOrderStatus = async (req: Request, res: Response) => {
+  const { orderId } = req.params;
+  const { orderStatus } = req.body;
+  try {
+    let updatedOrderStatus = await Order.findByIdAndUpdate(
+      orderId,
+      {
+        orderStatus,
+      },
+      { new: true, runValidators: true }
+    );
+    res.status(200).json({ success: true, updatedOrderStatus });
+  } catch (error: any) {
+    console.error(error);
+    res.status(400).json({
+      success: false,
+      message: `An error occurred: ${error.message}`,
     });
   }
 };

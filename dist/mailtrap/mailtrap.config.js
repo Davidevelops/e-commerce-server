@@ -13,5 +13,5 @@ exports.mailtrap_client = new mailtrap_1.MailtrapClient({
 });
 exports.sender = {
     email: "hello@developeronline.xyz",
-    name: "Mailtrap Test",
+    name: "Anyo E-Commerce Team",
 };

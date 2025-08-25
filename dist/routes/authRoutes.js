@@ -32,4 +32,13 @@ router.get("/get-popular-products", authController_1.getPopularProducts);
 router.patch("/update-product/:productId", authController_1.updateProduct);
 //delete product
 router.delete("/delete-product/:productID", authController_1.deleteProduct);
+//order routes
+router.post("/create-order", verifyToken_1.verifyToken, authController_1.createOrder);
+//get order of a user
+router.get("/user-orders", verifyToken_1.verifyToken, authController_1.userOrder);
+//get all order
+router.get("/orders", authController_1.getOrders);
+//updatev payment status
+router.patch("/update-payment-status/:orderId", authController_1.updatePaymentStatus);
+router.patch("/update-order-status/:orderId", authController_1.updateOrderStatus);
 exports.default = router;

@@ -12,13 +12,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteProduct = exports.updateProduct = exports.getPopularProducts = exports.getNewProduct = exports.getProduct = exports.getAllProduct = exports.createProduct = exports.checkAuth = exports.resetPassword = exports.forgotPassword = exports.logOut = exports.logIn = exports.verifyEmail = exports.signUp = void 0;
+exports.updateOrderStatus = exports.updatePaymentStatus = exports.getOrders = exports.userOrder = exports.createOrder = exports.deleteProduct = exports.updateProduct = exports.getPopularProducts = exports.getNewProduct = exports.getProduct = exports.getAllProduct = exports.createProduct = exports.checkAuth = exports.resetPassword = exports.forgotPassword = exports.logOut = exports.logIn = exports.verifyEmail = exports.signUp = void 0;
 const generateTokenAndSetCookie_1 = require("./../utils/generateTokenAndSetCookie");
 const userModel_1 = require("../models/userModel");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const email_1 = require("../mailtrap/email");
 const crypto_1 = __importDefault(require("crypto"));
 const productModel_1 = require("../models/productModel");
+const orderModel_1 = require("../models/orderModel");
 //check for authentication
 //sign up logic
 const signUp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -393,3 +394,103 @@ const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.deleteProduct = deleteProduct;
+const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        console.log("Incoming order request body:", req.body);
+        console.log("User from middleware:", req.userId);
+        const userId = req.userId;
+        if (!userId) {
+            return res.status(401).json({ message: "Unauthorized" });
+        }
+        const { products, paymentMethod, shippingAddress, paymentStatus, orderStatus, } = req.body;
+        const totalAmount = products.reduce((sum, item) => sum + item.price * item.quantity, 0);
+        const order = new orderModel_1.Order({
+            user: userId,
+            products,
+            totalAmount,
+            paymentMethod,
+            shippingAddress,
+            paymentStatus,
+            orderStatus,
+        });
+        yield order.save();
+        res.status(201).json({ successful: true, message: "Order placed.", order });
+    }
+    catch (error) {
+        console.error("Create Order Error:", error);
+        res.status(500).json({ successful: false, message: error.message });
+    }
+});
+exports.createOrder = createOrder;
+const userOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.userId;
+    try {
+        const userOrderList = yield orderModel_1.Order.find({ user: userId })
+            .populate("products.product")
+            .sort({ createdAt: -1 });
+        if (!userId) {
+            return res
+                .status(400)
+                .json({ success: false, message: "No logged in user" });
+        }
+        res.status(200).json({ success: true, userOrderList });
+    }
+    catch (error) {
+        console.error(error);
+        res.status(400).json({
+            success: false,
+            message: `An error occurred: ${error.message}`,
+        });
+    }
+});
+exports.userOrder = userOrder;
+const getOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let orders = yield orderModel_1.Order.find();
+        res.status(200).json({ success: true, orders });
+    }
+    catch (error) {
+        console.error(error);
+        res.status(400).json({
+            success: false,
+            message: `An error occurred: ${error.message}`,
+        });
+    }
+});
+exports.getOrders = getOrders;
+const updatePaymentStatus = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { orderId } = req.params;
+    const { paymentStatus } = req.body;
+    try {
+        let updatedPaymentStatus = yield orderModel_1.Order.findByIdAndUpdate(orderId, {
+            paymentStatus,
+        }, { new: true, runValidators: true });
+        res.status(200).json({ success: true, updatedPaymentStatus });
+    }
+    catch (error) {
+        console.error(error);
+        res.status(400).json({
+            success: false,
+            message: `An error occurred: ${error.message}`,
+        });
+    }
+});
+exports.updatePaymentStatus = updatePaymentStatus;
+const updateOrderStatus = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { orderId } = req.params;
+    const { orderStatus } = req.body;
+    try {
+        let updatedOrderStatus = yield orderModel_1.Order.findByIdAndUpdate(orderId, {
+            orderStatus,
+        }, { new: true, runValidators: true });
+        res.status(200).json({ success: true, updatedOrderStatus });
+    }
+    catch (error) {
+        console.error(error);
+        res.status(400).json({
+            success: false,
+            message: `An error occurred: ${error.message}`,
+        });
+    }
+});
+exports.updateOrderStatus = updateOrderStatus;

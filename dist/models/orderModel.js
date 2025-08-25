@@ -37,11 +37,20 @@ exports.Order = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
 const orderSchema = new mongoose_1.Schema({
     user: { type: mongoose_1.Schema.Types.ObjectId, ref: "User", required: true },
-    products: { type: mongoose_1.Schema.Types.ObjectId, ref: "Product", required: true },
+    products: [
+        {
+            product: { type: mongoose_1.Schema.Types.ObjectId, ref: "product", required: true },
+            name: { type: String, required: true },
+            price: { type: Number, required: true },
+            quantity: { type: Number, required: true },
+            image: { type: String, required: true },
+        },
+    ],
     totalAmount: Number,
     paymentStatus: { type: String, enum: ["pending", "completed", "failed"] },
     paymentMethod: { type: String, enum: ["COD", "gcash", "paymaya"] },
     shippingAddress: {
+        fullname: { type: String, required: true },
         street: { type: String, required: true },
         baranggay: { type: String, required: true },
         city: { type: String, required: true },

@@ -13,6 +13,11 @@ import {
   deleteProduct,
   getNewProduct,
   getPopularProducts,
+  createOrder,
+  userOrder,
+  getOrders,
+  updatePaymentStatus,
+  updateOrderStatus,
 } from "../controller/authController";
 import { createProduct } from "../controller/authController";
 import { verifyToken } from "../middleware/verifyToken";
@@ -47,4 +52,13 @@ router.patch("/update-product/:productId", updateProduct);
 //delete product
 router.delete("/delete-product/:productID", deleteProduct);
 
+//order routes
+router.post("/create-order", verifyToken, createOrder);
+//get order of a user
+router.get("/user-orders", verifyToken, userOrder);
+//get all order
+router.get("/orders", getOrders);
+//updatev payment status
+router.patch("/update-payment-status/:orderId", updatePaymentStatus);
+router.patch("/update-order-status/:orderId", updateOrderStatus);
 export default router;
