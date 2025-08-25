@@ -12,7 +12,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
-      "https://e-commerce-server-rnas.onrender.com/",
+      "https://e-commerce-server-rnas.onrender.com",
     ],
     credentials: true,
   })
