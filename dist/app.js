@@ -16,6 +16,8 @@ app.use((0, cors_1.default)({
     origin: [
         "http://localhost:3000",
         "https://e-commerce-server-rnas.onrender.com",
+        "https://e-commerce-client-blush-phi.vercel.app",
+        "https://e-commerce-admin-five-xi.vercel.app",
     ],
     credentials: true,
 }));
