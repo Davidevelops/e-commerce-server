@@ -14,6 +14,7 @@ app.use(
       "http://localhost:3000",
       "https://e-commerce-client-h1rotfkha-davids-projects-235cae0e.vercel.app",
       "https://e-commerce-admin-ku035aa69-davids-projects-235cae0e.vercel.app",
+      "https://e-commerce-client-blush-phi.vercel.app",
     ],
     credentials: true,
   })
