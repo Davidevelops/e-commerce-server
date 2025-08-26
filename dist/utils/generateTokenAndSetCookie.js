@@ -14,8 +14,8 @@ const generateTokenAndSetCookie = (res, userId, role) => {
     //adds a cookie to the http response that contains the token we created and it will be stored to the clients browser
     res.cookie("token", token, {
         httpOnly: true, //cannot be manipulated by js
-        secure: process.env.NODE_ENV === "production", // secure in production
-        sameSite: "strict", // prevent csrf attack
+        secure: true, // secure in production
+        sameSite: "none", // prevent csrf attack
         maxAge: 7 * 24 * 60 * 60 * 1000, //7days
     });
     return token;
