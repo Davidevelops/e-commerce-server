@@ -15,9 +15,8 @@ app.use((0, cookie_parser_1.default)());
 app.use((0, cors_1.default)({
     origin: [
         "http://localhost:3000",
-        "https://e-commerce-server-rnas.onrender.com",
-        "https://e-commerce-client-blush-phi.vercel.app",
-        "https://e-commerce-admin-five-xi.vercel.app",
+        "https://e-commerce-client-h1rotfkha-davids-projects-235cae0e.vercel.app",
+        "https://e-commerce-admin-ku035aa69-davids-projects-235cae0e.vercel.app",
     ],
     credentials: true,
 }));
